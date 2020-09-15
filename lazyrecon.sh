@@ -12,7 +12,7 @@ subdomainThreads=10
 dirsearchThreads=50
 dirsearchWordlist=~/tools/dirsearch/db/dicc.txt
 massdnsWordlist=~/tools/SecLists/Discovery/DNS/clean-jhaddix-dns.txt
-chromiumPath=/snap/bin/chromium
+chromiumPath=/usr/bin/chromium 
 ########################################
 # Happy Hunting
 ########################################
@@ -123,18 +123,23 @@ recon(){
 }
 
 excludedomains(){
-  # from @incredincomp with love <3
-  echo "Excluding domains (if you set them with -e)..."
-  IFS=$'\n'
-  # prints the $excluded array to excluded.txt with newlines 
-  printf "%s\n" "${excluded[*]}" > ./$domain/$foldername/excluded.txt
-  # this form of grep takes two files, reads the input from the first file, finds in the second file and removes
-  grep -vFf ./$domain/$foldername/excluded.txt ./$domain/$foldername/alldomains.txt > ./$domain/$foldername/alldomains2.txt
-  mv ./$domain/$foldername/alldomains2.txt ./$domain/$foldername/alldomains.txt
-  #rm ./$domain/$foldername/excluded.txt # uncomment to remove excluded.txt, I left for testing purposes
-  echo "Subdomains that have been excluded from discovery:"
-  printf "%s\n" "${excluded[@]}"
-  unset IFS
+  # fix from incredincomp's at https://github.com/nahamsec/lazyrecon/pull/38/files
+  if [ -z "$excluded" ]; then
+    echo "No domains have been excluded."
+  else
+    # from @incredincomp with love <3 SORRY!!
+    echo "Excluding domains (if you set them with -e)..."
+    IFS=$'\n'
+    # prints the $excluded array to excluded.txt with newlines
+    printf "%s\n" "${excluded[*]}" > ./$domain/$foldername/excluded.txt
+    # this form of grep takes two files, reads the input from the first file, finds in the second file and removes
+    grep -vFf ./$domain/$foldername/excluded.txt ./$domain/$foldername/alldomains.txt > ./$domain/$foldername/alldomains2.txt
+    mv ./$domain/$foldername/alldomains2.txt ./$domain/$foldername/alldomains.txt
+    #rm ./$domain/$foldername/excluded.txt # uncomment to remove excluded.txt, I left for testing purposes
+    echo "Subdomains that have been excluded from discovery:"
+    printf "%s\n" "${excluded[@]}"
+    unset IFS
+  fi
 }
 
 dirsearcher(){
@@ -249,7 +254,8 @@ echo '<div class="container single-post-container">
 <header class="post-header">
 </header>
 <div class="post-content clearfix" itemprop="articleBody">
-<h2>Content Discovery</h2>' >> ./$domain/$foldername/reports/$subdomain.html
+<h2>Content 
+</h2>' >> ./$domain/$foldername/reports/$subdomain.html
 
 
 
