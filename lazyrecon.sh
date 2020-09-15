@@ -111,7 +111,7 @@ recon(){
 
   echo "${green}Recon started on $domain ${reset}"
   echo "Listing subdomains using sublister..."
-  python3 ~/tools/Sublist3r/sublist3r.py -d $domain -t 10 -v -o ./$domain/$foldername/$domain.txt > /dev/null
+  python ~/tools/Sublist3r/sublist3r.py -d $domain -t 10 -v -o ./$domain/$foldername/$domain.txt > /dev/null
   echo "Checking certspotter..."
   curl -s https://certspotter.com/api/v0/certs\?domain\=$domain | jq '.[].dns_names[]' | sed 's/\"//g' | sed 's/\*\.//g' | sort -u | grep $domain >> ./$domain/$foldername/$domain.txt
   nsrecords $domain
@@ -150,7 +150,7 @@ cat ./$domain/$foldername/urllist.txt | xargs -P$subdomainThreads -I % sh -c "py
 
 aqua(){
 echo "Starting aquatone scan..."
-cat ./$domain/$foldername/urllist.txt | aquatone -chrome-path $chromiumPath -out ./$domain/$foldername/aqua_out -threads $auquatoneThreads -silent
+cat ./$domain/$foldername/urllist.txt | aquatone -chrome-path $chromiumPath -out ./$domain/$foldername/aqua_out -threads $auquatoneThreads -silent -scan-timeout 900
 }
 
 searchcrtsh(){
